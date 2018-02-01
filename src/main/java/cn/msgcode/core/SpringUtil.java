@@ -5,14 +5,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 
-public class SpringUtil4ApiRemote implements ApplicationContextAware {
+public class SpringUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext = null;
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
-        if (SpringUtil4ApiRemote.applicationContext == null) {
-            SpringUtil4ApiRemote.applicationContext = applicationContext;
+        if (SpringUtil.applicationContext == null) {
+            SpringUtil.applicationContext = applicationContext;
         }
     }
 

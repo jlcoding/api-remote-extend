@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * remote api handler
  * Created by jl on 18-1-28.
  */
-@Import(SpringUtil4ApiRemote.class)
+@Import(SpringUtil.class)
 @RestController
 @RequestMapping("/remote/api")
 public class ApiRemoteHandler {
@@ -68,14 +68,14 @@ public class ApiRemoteHandler {
 
                 Class<?> serviceClass = ApiMapper.apiModule(module);
                 Class<?>[] paramterTypes = ApiMapper.methodParamTypes(method);
-                obj = SpringUtil4ApiRemote.getBean(serviceClass);
+                obj = SpringUtil.getBean(serviceClass);
                 callMethod = serviceClass.getMethod(method, paramterTypes);
 
                 // response result
                 ApiInterceptor apiInterceptor = callMethod.getAnnotation(ApiInterceptor.class);
                 if (null != apiInterceptor) {
                     Class<?> interceptorClass = apiInterceptor.interceptorClass();
-                    Object interceptorInstance = SpringUtil4ApiRemote.getBean(interceptorClass);
+                    Object interceptorInstance = SpringUtil.getBean(interceptorClass);
                     String interceptorMethodName = apiInterceptor.method();
                     Method interceptorMethod = interceptorClass.getMethod(interceptorMethodName, ApiRequest.class);
                     response = interceptorMethod.invoke(interceptorInstance, request);

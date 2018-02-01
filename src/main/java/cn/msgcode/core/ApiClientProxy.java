@@ -58,7 +58,7 @@ public class ApiClientProxy implements MethodInterceptor {
         request.setData(params);
         request.setId(UUID.randomUUID().toString());
 
-        ApiClientExtend apiClientExtend = SpringUtil4ApiRemote.getBean(ApiClientExtend.class);
+        ApiClientExtend apiClientExtend = SpringUtil.getBean(ApiClientExtend.class);
         String url = "http://".concat(serviceId)
                 .concat("/remote/api/")
                 .concat(module)
