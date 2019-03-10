@@ -1,13 +1,15 @@
 package cn.msgcode.core;
 
 import cn.msgcode.annotation.ApiClient;
-import cn.msgcode.bean.ApiRequest;
+import cn.msgcode.bean.ApiRemoteRequest;
 import cn.msgcode.utils.YamlUtil;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -47,7 +49,7 @@ public class ApiClientProxy implements MethodInterceptor {
             serviceId = YamlUtil.getPropertyAsString(valueKey);
         }
 
-        ApiRequest request = new ApiRequest();
+        ApiRemoteRequest request = new ApiRemoteRequest();
         Map<String, Object> params = new HashMap<>();
         String[] paramNames = ApiMapper.methodParamNames(method.getName());
 
@@ -58,7 +60,7 @@ public class ApiClientProxy implements MethodInterceptor {
         request.setData(params);
         request.setId(UUID.randomUUID().toString());
 
-        ApiClientExtend apiClientExtend = SpringUtil.getBean(ApiClientExtend.class);
+        ApiClientExtend apiClientExtend = SpringUtils.getBean(ApiClientExtend.class);
         String url = "http://".concat(serviceId)
                 .concat("/remote/api/")
                 .concat(module)

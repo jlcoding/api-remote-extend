@@ -2,8 +2,8 @@ package cn.msgcode.core;
 
 import cn.msgcode.annotation.ApiInterceptor;
 import cn.msgcode.annotation.ApiParam;
-import cn.msgcode.bean.ApiRequest;
-import cn.msgcode.bean.ApiResponse;
+import cn.msgcode.bean.ApiRemoteRequest;
+import cn.msgcode.bean.ApiRemoteResponse;
 import cn.msgcode.utils.MethodUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * remote api handler
  * Created by jl on 18-1-28.
  */
-@Import(SpringUtil.class)
+@Import(SpringUtils.class)
 @RestController
 @RequestMapping("/remote/api")
 public class ApiRemoteHandler {
@@ -43,7 +43,7 @@ public class ApiRemoteHandler {
         long startTime = System.nanoTime();
         logger.info("ip={}, module={}, method={}, request={}", getRemoteIP(req), module, method, requestBody);
 
-        ApiRequest request = null;
+        ApiRemoteRequest request = null;
         Object response = null;
         String id = null;
 
@@ -51,10 +51,10 @@ public class ApiRemoteHandler {
             if (StringUtils.isEmpty(requestBody)) {
                 logger.error("JSON error, request body is blank, module={}, method={}",
                         module, method);
-                return ApiResponse.reqContentError();
+                return ApiRemoteResponse.reqContentError();
             }
             // transfer request string to Request object
-            request = JSON.parseObject(requestBody, ApiRequest.class);
+            request = JSON.parseObject(requestBody, ApiRemoteRequest.class);
             request.setIp(getRemoteIP(req)); // Get real ip
             request.setUserAgent(req.getHeader("user-agent"));
             request.setRemoteAddr(String.valueOf(req.getSession().getAttribute("RemoteAddr")));
@@ -68,16 +68,16 @@ public class ApiRemoteHandler {
 
                 Class<?> serviceClass = ApiMapper.apiModule(module);
                 Class<?>[] paramterTypes = ApiMapper.methodParamTypes(method);
-                obj = SpringUtil.getBean(serviceClass);
+                obj = SpringUtils.getBean(serviceClass);
                 callMethod = serviceClass.getMethod(method, paramterTypes);
 
                 // response result
                 ApiInterceptor apiInterceptor = callMethod.getAnnotation(ApiInterceptor.class);
                 if (null != apiInterceptor) {
                     Class<?> interceptorClass = apiInterceptor.interceptorClass();
-                    Object interceptorInstance = SpringUtil.getBean(interceptorClass);
+                    Object interceptorInstance = SpringUtils.getBean(interceptorClass);
                     String interceptorMethodName = apiInterceptor.method();
-                    Method interceptorMethod = interceptorClass.getMethod(interceptorMethodName, ApiRequest.class);
+                    Method interceptorMethod = interceptorClass.getMethod(interceptorMethodName, ApiRemoteRequest.class);
                     response = interceptorMethod.invoke(interceptorInstance, request);
                     if (null != response) {
 //                        response.setId(request.getId());
@@ -96,20 +96,20 @@ public class ApiRemoteHandler {
                 response = callMethod.invoke(obj, params);
 
 //                } else {
-//                    response = ApiResponse.invalidSignError();
+//                    response = ApiRemoteResponse.invalidSignError();
 //                }
             } else {
-                response = ApiResponse.missIdError();
+                response = ApiRemoteResponse.missIdError();
             }
         } catch (NoSuchMethodException e) {
             logger.error(String.format("Api not exist error, module=%s, method=%s, request=%s", module, method, requestBody), e);
-            response = ApiResponse.apiNotExist();
+            response = ApiRemoteResponse.apiNotExist();
         } catch (JSONException e) {
             logger.error(String.format("JSON error, module=%s, method=%s, request=%s", module, method, requestBody), e);
-            response = ApiResponse.reqContentError();
+            response = ApiRemoteResponse.reqContentError();
         } catch (Throwable t) {
             logger.error(String.format("Unexpected error, module=%s, method=%s, request=%s", module, method, requestBody), t);
-            response = ApiResponse.error();
+            response = ApiRemoteResponse.error();
         }
 //        response.setId(id);
         logger.info("module={}, method={}, total time spent is {}ms",

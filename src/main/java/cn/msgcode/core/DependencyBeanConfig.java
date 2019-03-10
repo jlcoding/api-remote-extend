@@ -11,8 +11,8 @@ public class DependencyBeanConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public SpringUtil springUtil() {
-        return new SpringUtil();
+    public SpringUtils springUtils() {
+        return new SpringUtils();
     }
 
     @Bean

@@ -1,7 +1,7 @@
 package cn.msgcode.core;
 
 
-import cn.msgcode.bean.ApiRequest;
+import cn.msgcode.bean.ApiRemoteRequest;
 import cn.msgcode.exception.RemoteMethodInvokeException;
 import com.alibaba.fastjson.JSON;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class ApiClientExtend {
     @Resource
     private RestTemplate restTemplate;
 
-    public Object exec(String url, ApiRequest request, Class<?> returnType) throws URISyntaxException, RemoteMethodInvokeException {
+    public Object exec(String url, ApiRemoteRequest request, Class<?> returnType) throws URISyntaxException, RemoteMethodInvokeException {
         URI uri = new URI(url);
         ResponseEntity responseEntity = restTemplate.postForEntity(uri, JSON.toJSONString(request), returnType);
         if(responseEntity.getStatusCode().equals(HttpStatus.OK)) {

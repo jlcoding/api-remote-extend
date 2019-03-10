@@ -5,14 +5,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 
-public class SpringUtil implements ApplicationContextAware {
+public class SpringUtils implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext = null;
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
-        if (SpringUtil.applicationContext == null) {
-            SpringUtil.applicationContext = applicationContext;
+        if (SpringUtils.applicationContext == null) {
+            SpringUtils.applicationContext = applicationContext;
         }
     }
 

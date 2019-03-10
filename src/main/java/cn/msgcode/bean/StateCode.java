@@ -1,15 +1,7 @@
 package cn.msgcode.bean;
 
 /**
- * 
- * <b><code>StateCode</code></b>
- * <p>
- * Comment here.
- * </p>
- * <b>Creation Time:</b> 2016年10月10日 下午2:24:46
- * 
- * @author abin.yao
- * @since qlchat 1.0
+ * @author jl
  */
 public final class StateCode {
 
